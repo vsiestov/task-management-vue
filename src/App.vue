@@ -19,9 +19,7 @@
     <router-view/>
 
     <transition name="loading">
-      <div class="loading" v-if="isLoading">
-        Loading ...
-      </div>
+      <Loading v-if="isLoading" />
     </transition>
 
     <transition name="notification">
@@ -35,8 +33,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { IUser } from '@/interfaces/users.interfaces';
+import Loading from './components/Loading.vue';
 
-@Component
+@Component({
+  components: {
+    Loading
+  }
+})
 export default class App extends Vue {
   public get isLoading() {
     return this.$store.state.isLoading;
