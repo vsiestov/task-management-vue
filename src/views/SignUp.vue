@@ -1,67 +1,23 @@
 <template>
     <div class="layout">
-        <form @submit.prevent="onSubmit()" novalidate>
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="text"
-                    placeholder="First name"
-                    required
-                    :class="{invalid: errors.firstName}"
-                    v-model="form.firstName"
-                    @input="onInputChange('firstName')"
-                />
-                <div role="alert" class="alert" v-if="errors.firstName">{{ errors.firstName }}</div>
-            </div>
+        <div class="align-center">
+            <form @submit.prevent="onSubmit()" novalidate class="form">
+                <h1 class="page__header">Sign Up</h1>
 
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="text"
-                    required
-                    placeholder="Last name"
-                    :class="{invalid: errors.lastName}"
-                    v-model="form.lastName"
-                    @input="onInputChange('lastName')"
-                     />
-                <div role="alert" class="alert" v-if="errors.lastName">{{ errors.lastName }}</div>
-            </div>
+                <Input placeholder="First name" name="firstName" :required="true" @input="form.firstName = $event" />
 
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="email"
-                    placeholder="Email"
-                    required
-                    v-model="form.email"
-                    :class="{invalid: errors.email}"
-                    @input="onInputChange('email')"
-                />
-                <div role="alert" class="alert" v-if="errors.email">{{ errors.email }}</div>
-            </div>
+                <Input placeholder="Last name" name="lastName" :required="true" @input="form.lastName = $event" />
 
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="password"
-                    placeholder="Password"
-                    minlength="6"
-                    required
-                    :class="{invalid: errors.password}"
-                    v-model="form.password"
-                    @input="onInputChange('password')"
-                />
-                <div role="alert" class="alert" v-if="errors.password">{{ errors.password }}</div>
-            </div>
+                <Input placeholder="Email" type="email" name="email" :required="true" @input="form.email = $event" />
 
-            <div class="input__controls">
-                <button class="button" type="submit" formnovalidate>Submit</button>
-            </div>
+                <Input placeholder="Password" type="password" name="Password" :required="true" @input="form.password = $event" />
 
-            <div>
-                <routerLink to="/sign-in">Sign In</routerLink>
-            </div>
-        </form>
+                <div class="input__controls">
+                    <routerLink to="/sign-in">Sign In</routerLink>
+                    <button class="button" type="submit" formnovalidate>Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -71,8 +27,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import { IRegistration } from '@/interfaces/users.interfaces';
 import { errorMessage } from '@/helpers/constants';
 import { isFormValid, isItemValid } from '@/helpers/validator';
+import Input from '@/components/Input.vue';
 
-@Component
+@Component({
+  components: {
+    Input
+  }
+})
 export default class SignUp extends Vue {
   public form: IRegistration = {
     firstName: '',

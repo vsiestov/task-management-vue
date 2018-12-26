@@ -37,6 +37,7 @@ export default {
 
       commit('signIn', response);
 
+      updateHeader(response.token);
       localStorage.setItem('token', response.token);
 
       router.push({
@@ -57,6 +58,7 @@ export default {
 
       commit('signIn', response);
 
+      updateHeader(response.token);
       localStorage.setItem('token', response.token);
 
       router.push({

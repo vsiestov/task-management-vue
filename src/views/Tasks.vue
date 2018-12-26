@@ -3,68 +3,61 @@
         <div class="tasks__header">
             <h1>Your tasks</h1>
 
-            <button class="tasks__action button" @click="onCreateTask()">Create task</button>
+            <button class="tasks__action button blue" @click="onCreateTask()">
+                <span>Create task</span>
+            </button>
         </div>
 
         <div class="tasks__form" v-if="isFormVisible">
-            <form @submit.prevent="onSubmit()" novalidate>
-                <div class="input__wrap">
-                    <textarea
-                        required
-                        :class="{invalid: errors.description}"
-                        v-model="form.description"
-                        @input="onInputChange('description')"
-                    ></textarea>
-                    <div role="alert" class="alert" v-if="errors.description">{{ errors.description }}</div>
-                </div>
+            <div class="align-center">
+                <form @submit.prevent="onSubmit()" novalidate class="form form__inside">
+                    <Input type="textarea" placeholder="Description" name="description" :value="form.description" @input="form.description = $event" />
 
-                <div class="input__wrap">
-                    <input
-                        required
-                        type="datetime-local"
-                        :class="{invalid: errors.due}"
-                        ref="dateInput"
-                        @input="onInputChange('due', $event)"
-                        :value="form.due | dateInput"
-                    >
-                    <div role="alert" class="alert" v-if="errors.due">{{ errors.due }}</div>
-                </div>
+                    <Input type="datetime-local" name="due" :value="form.due" @input="form.due = $event" :required="true"/>
 
-                <div class="input__controls">
-                    <button class="button" type="button" @click="onCancelTask">Cancel</button>
-                    <button class="button" type="submit" formnovalidate>
-                        <span v-if="form._id">Update task</span>
-                        <span v-else>Add task</span>
-                    </button>
-                </div>
-            </form>
+                    <div class="input__controls">
+                        <button class="button" type="button" @click="onCancelTask">
+                            <span>Cancel</span>
+                        </button>
+                        <button class="button blue" type="submit" formnovalidate>
+                            <span v-if="form._id">Update task</span>
+                            <span v-else>Add task</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <ul class="tasks__list">
-            <li v-for="item in tasks" class="tasks__item">
-                <div class="tasks__description">
-                    Description: {{ item.description }}
-                </div>
-                <div class="tasks__due">
-                    Due date: {{ item.due | date('DD.MM.YYYY') }}
-                </div>
-                <div class="tasks__controls">
-                    <button class="button" @click="onChangeTask(item)">Change</button>
-                    <button class="button" @click="onDeleteTask(item)">Delete</button>
-                </div>
-            </li>
-        </ul>
+        <div v-if="tasks.length">
+            <Search @input="search.value = $event" />
+
+            <ul class="tasks__list">
+                <TaskItem :item="item" :key="item._id" v-for="item in filteredTasks" @change="onChangeTask($event)" @delete="onDeleteTask($event)" />
+            </ul>
+        </div>
+        <div class="tasks__placeholder" v-else>
+            You have not tasks yet
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { ITask } from '@/interfaces/tasks.interface';
-import { isFormValid, isItemValid } from '@/helpers/validator';
+import { isFormValid } from '@/helpers/validator';
 import { errorMessage } from '@/helpers/constants';
-import { isValid } from 'date-fns';
+import { format } from 'date-fns';
+import Search from '@/components/Search.vue';
+import TaskItem from '@/components/TaskItem.vue';
+import Input from '@/components/Input.vue';
 
-@Component
+@Component({
+  components: {
+    Search,
+    TaskItem,
+    Input
+  }
+})
 export default class Tasks extends Vue {
   public isFormVisible: boolean = false;
   public form: {
@@ -78,9 +71,22 @@ export default class Tasks extends Vue {
   };
   public errors: any = {
   };
+  public search = {
+    value: ''
+  };
 
   public get tasks(): ITask[] {
     return this.$store.state.tasks;
+  }
+
+  public get filteredTasks(): ITask[] {
+    if (!this.search.value) {
+      return this.$store.state.tasks;
+    }
+
+    return this.$store.state.tasks.filter((item: ITask) => {
+      return item.description.toLowerCase().indexOf(this.search.value.trim().toLowerCase()) !== -1;
+    });
   }
 
   public onChangeTask(item: ITask) {
@@ -89,27 +95,13 @@ export default class Tasks extends Vue {
     this.form = {
       _id: item._id,
       description: item.description,
-      due: item.due
+      due: format(item.due, 'YYYY-MM-DDTHH:MM')
     };
 
   }
 
   public onDeleteTask(item: ITask) {
     return this.$store.dispatch('deleteTask', item._id);
-  }
-
-  public onInputChange(name: string, event: KeyboardEvent) {
-    isItemValid(this.errors, this.form, name);
-
-    if (name === 'due') {
-      const input = event.target as HTMLInputElement;
-      const date = new Date(input.value);
-
-      if (isValid(date)) {
-        this.form.due = input.value;
-      }
-
-    }
   }
 
   public onCreateTask() {
@@ -155,3 +147,29 @@ export default class Tasks extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+    @import "../styles/base/var";
+
+    .tasks__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 0 25px;
+
+        h1 {
+            color: $color1;
+            font-family: $font-primary;
+            font-size: 30px;
+            font-weight: 700;
+        }
+    }
+
+    .tasks__placeholder {
+        text-align: center;
+        color: $color6;
+        font-family: $font-secondary;
+        font-size: 24px;
+        font-weight: 400;
+    }
+</style>

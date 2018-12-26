@@ -1,10 +1,19 @@
 <template>
-  <div id="app">
-    <header class="header" v-if="user">
-      <div class="header__user">
-        {{ user.firstName }} {{ user.lastName }}
-      </div>
-      <button class="button" @click="onLogout">Logout</button>
+  <div id="app" class="main-wrap">
+    <header class="header">
+      <template v-if="user">
+        <div class="header__user">
+          {{ user.firstName }} {{ user.lastName }}
+        </div>
+        <button class="button" @click="onLogout">
+          <span>Logout</span>
+        </button>
+      </template>
+      <template v-else>
+        <div class="header__user">
+          Task management
+        </div>
+      </template>
     </header>
 
     <router-view/>

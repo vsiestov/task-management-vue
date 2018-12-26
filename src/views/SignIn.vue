@@ -1,41 +1,20 @@
 <template>
     <div class="layout">
+        <div class="align-center">
+            <form @submit.prevent="onSubmit()" class="form">
+                <h1 class="page__header">Sign In</h1>
 
-        <form @submit.prevent="onSubmit()">
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="email"
-                    placeholder="Email"
-                    required
-                    v-model="form.email"
-                    :class="{invalid: errors.email}"
-                    @input="onInputChange('email')"
-                />
-                <div role="alert" class="alert" v-if="errors.email">{{ errors.email }}</div>
-            </div>
+                <Input type="email" placeholder="Email" name="email" :required="true" @input="form.email = $event" />
 
-            <div class="input__wrap">
-                <input
-                    class="input"
-                    type="password"
-                    placeholder="Password"
-                    required
-                    v-model="form.password"
-                    :class="{invalid: errors.password}"
-                    @input="onInputChange('password')"
-                />
-                <div role="alert" class="alert" v-if="errors.password">{{ errors.password }}</div>
-            </div>
+                <Input type="password" placeholder="Password" name="password" :required="true" @input="form.password = $event" />
 
-            <div class="input__controls">
-                <button class="button" type="submit">Submit</button>
-            </div>
+                <div class="input__controls">
+                    <routerLink class="link" to="/sign-up">Sign up</routerLink>
+                    <button class="button" type="submit">Submit</button>
+                </div>
 
-            <div>
-                <routerLink to="/sign-up">Sign up</routerLink>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -44,8 +23,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import { IAuth } from '@/interfaces/users.interfaces';
 import { isFormValid, isItemValid } from '@/helpers/validator';
 import { errorMessage } from '@/helpers/constants';
+import Input from '@/components/Input.vue';
 
-@Component
+@Component({
+  components: {
+    Input
+  }
+})
 export default class SignIn extends Vue {
   public form: IAuth = {
     email: '',
