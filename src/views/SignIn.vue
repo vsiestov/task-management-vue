@@ -12,7 +12,6 @@
                     <routerLink class="link" to="/sign-up">Sign up</routerLink>
                     <button class="button" type="submit">Submit</button>
                 </div>
-
             </form>
         </div>
     </div>

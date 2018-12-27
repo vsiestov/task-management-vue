@@ -1,5 +1,13 @@
 # task-management
 
+## Demo
+
+https://task-management-vue.firebaseapp.com/
+
+email: siestov.valeriy@gmail.com
+
+password: 111111
+
 ## Project setup
 ```
 yarn install
@@ -15,20 +23,8 @@ yarn run serve
 yarn run build
 ```
 
-### Run your tests
-```
-yarn run test
-```
-
 ### Lints and fixes files
 ```
 yarn run lint
 ```
 
-### Run your unit tests
-```
-yarn run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
